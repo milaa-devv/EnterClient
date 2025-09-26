@@ -54,11 +54,18 @@ export const useEmpresaSearch = (): UseEmpresaSearchReturn => {
       )
 
     if (searchQuery.trim()) {
-      query = query.or(`
-        rut.ilike.%${searchQuery}%,
-        empkey.eq.${searchQuery},
-        empresa_comercial.nombre_comercial.ilike.%${searchQuery}%
-      `)
+      const search = searchQuery.trim()
+      if (/^\d+$/.test(search)) {
+        // Si solo contiene dígitos buscar empkey exacto o filtro nombre/rut
+        query = query.or(
+          `rut.ilike.%${search}%,nombre.ilike.%${search}%,empkey.eq.${search}`
+        )
+      } else {
+        // Busca solo en rut o nombre
+        query = query.or(
+          `rut.ilike.%${search}%,nombre.ilike.%${search}%`
+        )
+      }
     }
 
     if (filters.estado) {
@@ -73,7 +80,6 @@ export const useEmpresaSearch = (): UseEmpresaSearchReturn => {
         .lte('empresa_onboarding.fecha_inicio', filters.fechaFin)
     }
 
-    // Para COM muestra todas las empresas sin el filtro por usuario 'created_by'
     if (profile?.perfil?.nombre === 'OB') {
       query = query.in('empresa_onboarding.estado', [
         'ONBOARDING',
@@ -91,7 +97,10 @@ export const useEmpresaSearch = (): UseEmpresaSearchReturn => {
     setLoading(true)
     setError(null)
     try {
-      const query = buildQuery().range((currentPage - 1) * pageSize, currentPage * pageSize - 1)
+      const query = buildQuery().range(
+        (currentPage - 1) * pageSize,
+        currentPage * pageSize - 1
+      )
 
       const { data, error: searchError, count } = await query
 
@@ -106,11 +115,6 @@ export const useEmpresaSearch = (): UseEmpresaSearchReturn => {
     }
   }, [buildQuery, currentPage, pageSize])
 
-  const updateFilters = useCallback((newFilters: Partial<SearchFilters>) => {
-    setFilters((prev) => ({ ...prev, ...newFilters }))
-    setCurrentPage(1)
-  }, [])
-
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       searchEmpresas()
@@ -120,6 +124,11 @@ export const useEmpresaSearch = (): UseEmpresaSearchReturn => {
 
   useEffect(() => {
     searchEmpresas()
+  }, [])
+
+  const updateFilters = useCallback((newFilters: Partial<SearchFilters>) => {
+    setFilters((prev) => ({ ...prev, ...newFilters }))
+    setCurrentPage(1)
   }, [])
 
   return {

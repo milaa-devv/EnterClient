@@ -22,7 +22,7 @@ export const EmpresaGrid: React.FC<EmpresaGridProps> = ({
   totalCount,
   onPageChange,
   pageSize = 12,
-  loading = false
+  loading = false,
 }) => {
   const totalPages = Math.ceil(totalCount / pageSize)
 
@@ -53,7 +53,6 @@ export const EmpresaGrid: React.FC<EmpresaGridProps> = ({
 
   return (
     <div>
-      {/* Grid/List Content */}
       {viewMode === 'grid' ? (
         <div className="row g-4 mb-4">
           {empresas.map((empresa) => (
@@ -70,7 +69,6 @@ export const EmpresaGrid: React.FC<EmpresaGridProps> = ({
         </div>
       )}
 
-      {/* Pagination */}
       {totalPages > 1 && (
         <Pagination
           currentPage={currentPage}

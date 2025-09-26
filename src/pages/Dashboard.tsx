@@ -11,7 +11,7 @@ const DashboardContent: React.FC = () => {
     canEditSac,
     canEditOnboarding,
   } = usePermissions()
-  
+
   const navigate = useNavigate()
 
   const [searchText, setSearchText] = useState('')
@@ -21,6 +21,7 @@ const DashboardContent: React.FC = () => {
     setCurrentPage,
     totalCount,
     setSearchQuery,
+    loading,
   } = useEmpresaSearch()
 
   if (!profile) return null
@@ -31,7 +32,6 @@ const DashboardContent: React.FC = () => {
     setSearchQuery(value)
   }
 
-  // Navega a la página de creación de empresa
   const handleCrearEmpresa = () => {
     navigate('/crear-empresa')
   }
@@ -43,10 +43,7 @@ const DashboardContent: React.FC = () => {
           <div>
             <h2>Dashboard Comercial</h2>
             {canEditComercial() && (
-              <button
-                className="btn-acento mb-3"
-                onClick={handleCrearEmpresa}
-              >
+              <button className="btn-acento mb-3" onClick={handleCrearEmpresa}>
                 Crear Empresa Comercial
               </button>
             )}
@@ -56,32 +53,32 @@ const DashboardContent: React.FC = () => {
               currentPage={currentPage}
               totalCount={totalCount}
               onPageChange={setCurrentPage}
+              loading={loading}
             />
           </div>
         )
-   case 'OB':
-  return (
-    <div>
-      <h2>Onboarding Ejecutivo</h2>
-      {canEditOnboarding() && (
-        <>
-          <button
-            className="btn-outline-primary mb-3"
-            onClick={() => navigate('/configuracion-empresa')}
-          >
-            Completar Configuración Empresa
-          </button>
-        </>
-      )}
-      <EmpresaGrid
-        empresas={empresas}
-        viewMode="list"
-        currentPage={currentPage}
-        totalCount={totalCount}
-        onPageChange={setCurrentPage}
-      />
-    </div>
-  )
+      case 'OB':
+        return (
+          <div>
+            <h2>Onboarding Ejecutivo</h2>
+            {canEditOnboarding() && (
+              <button
+                className="btn-outline-primary mb-3"
+                onClick={() => navigate('/configuracion-empresa')}
+              >
+                Completar Configuración Empresa
+              </button>
+            )}
+            <EmpresaGrid
+              empresas={empresas}
+              viewMode="list"
+              currentPage={currentPage}
+              totalCount={totalCount}
+              onPageChange={setCurrentPage}
+              loading={loading}
+            />
+          </div>
+        )
       case 'OB_ADMIN':
         return (
           <div>
@@ -93,30 +90,32 @@ const DashboardContent: React.FC = () => {
               currentPage={currentPage}
               totalCount={totalCount}
               onPageChange={setCurrentPage}
+              loading={loading}
             />
           </div>
         )
       case 'SAC':
-  return (
-    <div>
-      <h2>SAC Ejecutivo</h2>
-      {canEditSac() && (
-        <button
-          className="btn-acento mb-3"
-          onClick={() => navigate('/crear-sac')}
-        >
-          Crear SAC
-        </button>
-      )}
-      <EmpresaGrid
-        empresas={empresas}
-        viewMode="list"
-        currentPage={currentPage}
-        totalCount={totalCount}
-        onPageChange={setCurrentPage}
-      />
-    </div>
-  )
+        return (
+          <div>
+            <h2>SAC Ejecutivo</h2>
+            {canEditSac() && (
+              <button
+                className="btn-acento mb-3"
+                onClick={() => navigate('/crear-sac')}
+              >
+                Crear SAC
+              </button>
+            )}
+            <EmpresaGrid
+              empresas={empresas}
+              viewMode="list"
+              currentPage={currentPage}
+              totalCount={totalCount}
+              onPageChange={setCurrentPage}
+              loading={loading}
+            />
+          </div>
+        )
       case 'SAC_ADMIN':
         return (
           <div>
@@ -128,6 +127,7 @@ const DashboardContent: React.FC = () => {
               currentPage={currentPage}
               totalCount={totalCount}
               onPageChange={setCurrentPage}
+              loading={loading}
             />
           </div>
         )
@@ -141,6 +141,7 @@ const DashboardContent: React.FC = () => {
               currentPage={currentPage}
               totalCount={totalCount}
               onPageChange={setCurrentPage}
+              loading={loading}
             />
           </div>
         )
@@ -177,4 +178,3 @@ const Dashboard: React.FC = () => {
 }
 
 export default Dashboard
-
