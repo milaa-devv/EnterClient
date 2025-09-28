@@ -113,6 +113,15 @@ export interface DatosSAC {
 export interface EmpresaCompleta {
   id?: number
   empkey?: number
+  rut?: string
+  nombre?: string
+  nombre_fantasia?: string
+  fecha_inicio?: string
+  logo?: string
+  domicilio?: string
+  telefono?: string
+  correo?: string
+
   estado: 'COMERCIAL' | 'ONBOARDING' | 'SAC' | 'COMPLETADA'
   created_at?: string
   updated_at?: string

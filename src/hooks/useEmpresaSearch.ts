@@ -46,50 +46,45 @@ export const useEmpresaSearch = (): UseEmpresaSearchReturn => {
         empkey,
         rut,
         nombre,
-        empresa_comercial(*),
-        empresa_onboarding(*),
-        empresa_sac(*)
-      `,
+        nombre_fantasia,
+        fecha_inicio,
+        logo,
+        domicilio,
+        telefono,
+        correo
+        `,
         { count: 'exact' }
       )
 
     if (searchQuery.trim()) {
       const search = searchQuery.trim()
       if (/^\d+$/.test(search)) {
-        // Si solo contiene dígitos buscar empkey exacto o filtro nombre/rut
         query = query.or(
           `rut.ilike.%${search}%,nombre.ilike.%${search}%,empkey.eq.${search}`
         )
       } else {
-        // Busca solo en rut o nombre
         query = query.or(
           `rut.ilike.%${search}%,nombre.ilike.%${search}%`
         )
       }
     }
 
-    if (filters.estado) {
-      if (profile?.perfil?.nombre !== 'COM') {
-        query = query.eq('empresa_onboarding.estado', filters.estado)
-      }
+    // Si tienes dashboards con filtros de estado de onboarding, mantenlos por rol
+    if (filters.estado && profile?.perfil?.nombre !== 'COM') {
+      query = query.eq('empresa_onboarding.estado', filters.estado)
     }
-
     if (filters.fechaInicio && filters.fechaFin) {
       query = query
         .gte('empresa_onboarding.fecha_inicio', filters.fechaInicio)
         .lte('empresa_onboarding.fecha_inicio', filters.fechaFin)
     }
-
     if (profile?.perfil?.nombre === 'OB') {
       query = query.in('empresa_onboarding.estado', [
-        'ONBOARDING',
-        'SAC',
-        'COMPLETADA',
+        'ONBOARDING', 'SAC', 'COMPLETADA'
       ])
     } else if (profile?.perfil?.nombre === 'SAC') {
       query = query.in('empresa_onboarding.estado', ['SAC', 'COMPLETADA'])
     }
-
     return query
   }, [searchQuery, filters, profile])
 
@@ -101,11 +96,8 @@ export const useEmpresaSearch = (): UseEmpresaSearchReturn => {
         (currentPage - 1) * pageSize,
         currentPage * pageSize - 1
       )
-
       const { data, error: searchError, count } = await query
-
       if (searchError) throw searchError
-
       setEmpresas(data || [])
       setTotalCount(count || 0)
     } catch (err: any) {
