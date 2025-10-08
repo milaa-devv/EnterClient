@@ -1,4 +1,3 @@
-// src/pages/UnauthorizedPage.tsx
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { ShieldOff, ArrowLeft, Home } from 'lucide-react'

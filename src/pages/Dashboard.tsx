@@ -43,7 +43,7 @@ const DashboardContent: React.FC = () => {
           <div>
             <h2>Dashboard Comercial</h2>
             {canEditComercial() && (
-              <button className="btn-acento mb-3" onClick={handleCrearEmpresa}>
+              <button className="btn btn-gradient mb-3" onClick={handleCrearEmpresa}>
                 Crear Empresa Comercial
               </button>
             )}

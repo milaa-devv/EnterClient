@@ -18,8 +18,8 @@ const STEPS = [
   'Información del Plan'
 ]
 
-export const FormStepper: React.FC<FormStepperProps> = ({ 
-  orientation = 'horizontal' 
+export const FormStepper: React.FC<FormStepperProps> = ({
+  orientation = 'horizontal'
 }) => {
   const { state, setCurrentStep } = useFormContext()
   
@@ -66,3 +66,4 @@ export const FormStepper: React.FC<FormStepperProps> = ({
     </div>
   )
 }
+

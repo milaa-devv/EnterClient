@@ -1,10 +1,6 @@
-// src/styles/components.scss
-@import 'variables';
-@import 'custom-properties';
+@use 'variables' as *;
+@use 'custom-properties' as *;
 
-// ==========================================
-// UTILITY CLASSES
-// ==========================================
 
 .font-display {
   font-family: var(--font-display) !important;
@@ -30,9 +26,6 @@
   background: var(--gradient-primary) !important;
 }
 
-// ==========================================
-// LAYOUT COMPONENTS
-// ==========================================
 
 // Sidebar
 .sidebar {
@@ -166,6 +159,8 @@
     box-shadow: 0 4px 12px rgba(169, 134, 255, 0.3);
   }
 }
+
+
 
 // ==========================================
 // CARD COMPONENTS

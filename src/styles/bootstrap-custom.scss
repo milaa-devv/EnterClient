@@ -1,4 +1,4 @@
-@import "variables";
+@use "variables" as *;
 
 // Bootstrap customization
 $primary: $primary-color;

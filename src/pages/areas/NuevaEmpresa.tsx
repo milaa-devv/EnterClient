@@ -1,12 +1,10 @@
-// src/pages/areas/NuevaEmpresa.tsx
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ArrowLeft, Save, Send } from 'lucide-react'
+import { ArrowLeft, Send } from 'lucide-react'
 import { FormStepper } from '@/components/FormStepper'
-import { FormProvider} from '@/contexts/FormContext'
-import { useMultiStepForm } from '@/hooks/useMultiStepForm'
+import { FormProvider, useFormContext } from '@/contexts/FormContext'
 
-// Componentes de cada paso
+// Importa tus componentes de cada paso
 import { DatosGeneralesStep } from '@/components/forms/DatosGeneralesStep'
 import { DatosContactoStep } from '@/components/forms/DatosContactoStep'
 import { ActividadesEconomicasStep } from '@/components/forms/ActividadesEconomicasStep'
@@ -31,16 +29,9 @@ const STEP_COMPONENTS = [
 
 const NuevaEmpresaContent: React.FC = () => {
   const navigate = useNavigate()
-  //const { state } = useFormContext()
-  const {
-    currentStep,
-    totalSteps,
-    nextStep,
-    prevStep,
-    isLoading,
-    saveProgress,
-    submitForm
-  } = useMultiStepForm()
+  const { state, nextStep, prevStep } = useFormContext()
+  const currentStep = state.currentStep
+  const totalSteps = STEP_COMPONENTS.length
 
   const CurrentStepComponent = STEP_COMPONENTS[currentStep]
   const isFirstStep = currentStep === 0
@@ -54,28 +45,16 @@ const NuevaEmpresaContent: React.FC = () => {
     }
   }
 
-  const handleNext = async () => {
-    const success = await nextStep()
-    if (success && isLastStep) {
-      try {
-        await submitForm()
-        navigate('/comercial', { 
-          state: { 
-            message: 'Empresa creada exitosamente y enviada a Onboarding' 
-          }
-        })
-      } catch (error) {
-        console.error('Error enviando formulario:', error)
-      }
-    }
-  }
-
-  const handleSaveDraft = async () => {
-    try {
-      await saveProgress()
-      // Mostrar mensaje de éxito
-    } catch (error) {
-      console.error('Error guardando borrador:', error)
+  const handleNext = () => {
+    if (!isLastStep) {
+      nextStep()
+    } else {
+      // Aquí puedes agregar lógica para submit
+      navigate('/comercial', { 
+        state: { 
+          message: 'Empresa creada exitosamente y enviada a Onboarding' 
+        }
+      })
     }
   }
 
@@ -111,30 +90,17 @@ const NuevaEmpresaContent: React.FC = () => {
             <div className="card-body p-4">
               <CurrentStepComponent />
             </div>
-
-            {/* Footer con botones */}
             <div className="card-footer bg-light">
               <div className="d-flex justify-content-between align-items-center">
                 <div className="text-muted small">
                   Paso {currentStep + 1} de {totalSteps}
                 </div>
-
                 <div className="d-flex gap-2">
-                  <button
-                    type="button"
-                    className="btn btn-outline-secondary d-flex align-items-center gap-2"
-                    onClick={handleSaveDraft}
-                    disabled={isLoading}
-                  >
-                    <Save size={16} />
-                    Guardar Borrador
-                  </button>
 
                   <button
                     type="button"
                     className="btn btn-secondary"
                     onClick={handlePrevious}
-                    disabled={isLoading}
                   >
                     {isFirstStep ? 'Cancelar' : 'Anterior'}
                   </button>
@@ -143,25 +109,13 @@ const NuevaEmpresaContent: React.FC = () => {
                     type="button"
                     className={`btn ${isLastStep ? 'btn-success' : 'btn-primary'} d-flex align-items-center gap-2`}
                     onClick={handleNext}
-                    disabled={isLoading}
                   >
-                    {isLoading ? (
+                    {isLastStep ? (
                       <>
-                        <div className="spinner-border spinner-border-sm" role="status" />
-                        {isLastStep ? 'Enviando...' : 'Guardando...'}
+                        <Send size={16} />
+                        Enviar a Onboarding
                       </>
-                    ) : (
-                      <>
-                        {isLastStep ? (
-                          <>
-                            <Send size={16} />
-                            Enviar a Onboarding
-                          </>
-                        ) : (
-                          'Siguiente'
-                        )}
-                      </>
-                    )}
+                    ) : 'Siguiente'}
                   </button>
                 </div>
               </div>
@@ -173,12 +127,10 @@ const NuevaEmpresaContent: React.FC = () => {
   )
 }
 
-const NuevaEmpresa: React.FC = () => {
-  return (
-    <FormProvider>
-      <NuevaEmpresaContent />
-    </FormProvider>
-  )
-}
+const NuevaEmpresa: React.FC = () => (
+  <FormProvider>
+    <NuevaEmpresaContent />
+  </FormProvider>
+)
 
 export default NuevaEmpresa
